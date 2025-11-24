@@ -6,7 +6,7 @@
 #    By: kkido <kkido@student.42tokyo.jp>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/10/22 11:36:37 by kkido             #+#    #+#              #
-#    Updated: 2025/11/19 16:30:34 by kkido            ###   ########.fr        #
+#    Updated: 2025/11/24 17:42:05 by kkido            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,6 +19,8 @@ SRCS := \
 	main.c \
 	exit.c \
 	error_check.c \
+	philo_utils.c \
+	do_philosopher.c \
 
 
 OBJS := $(SRCS:.c=.o)
