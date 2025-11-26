@@ -6,16 +6,15 @@
 /*   By: kkido <kkido@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/19 13:13:31 by kkido             #+#    #+#             */
-/*   Updated: 2025/11/24 18:04:09 by kkido            ###   ########.fr       */
+/*   Updated: 2025/11/26 15:50:15 by kkido            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	free_all_and_exit(size_t id, t_threads_and_forks *threads_and_forks,
-		int num_of_philo)
+void	free_philo_data_and_exit(size_t id, t_philo_data *philo_all_resources)
 {
-	free_all_mem(id, threads_and_forks, num_of_philo);
+	free_all_mem(id, philo_all_resources);
 	if (id == 0)
 		exit(0);
 	if (id == 1)
@@ -27,15 +26,16 @@ void	free_all_and_exit(size_t id, t_threads_and_forks *threads_and_forks,
 	if (id == 2)
 		write(2, "Error: Parameter must be natural number(1-2147483647).\n",
 			56);
-	if (id == 3)
+	if (id == 3 | id == 7)
 		write(2, "Error: Memory allocation failed.\n", 34);
-	if (id == 4)
+	if (id == 4 || id == 5)
 		write(2, "Error: Mutex init failed\n", 26);
+	if (id == 6)
+		write(2, "Error: Get_time_of_day failed\n", 31);
 	exit(1);
 }
 
-void	free_all_mem(size_t id, t_threads_and_forks *threads_and_forks,
-		int num_of_philo)
+void	free_all_mem(size_t id, t_philo_data *philo_all_resources)
 {
 	int	i;
 
@@ -44,14 +44,15 @@ void	free_all_mem(size_t id, t_threads_and_forks *threads_and_forks,
 		return ;
 	if (id != 3 && id != 4)
 	{
-		while (i < num_of_philo)
-			pthread_mutex_destroy(&threads_and_forks->forks[i++]);
+		while (i < philo_all_resources->num_of_philo)
+			pthread_mutex_destroy(&philo_all_resources->forks[i++]);
+		if (id != 5)
+			pthread_mutex_destroy(philo_all_resources->someone_dead);
 	}
-	if (threads_and_forks)
-	{
-		if (threads_and_forks->forks)
-			free(threads_and_forks->forks);
-		if (threads_and_forks->threads)
-			free(threads_and_forks->threads);
-	}
+	if (philo_all_resources->forks)
+		free(philo_all_resources->forks);
+	if (philo_all_resources->threads)
+		free(philo_all_resources->threads);
+	if (philo_all_resources->someone_dead)
+		free(philo_all_resources->someone_dead);
 }

@@ -6,14 +6,14 @@
 /*   By: kkido <kkido@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/19 18:09:37 by kkido             #+#    #+#             */
-/*   Updated: 2025/11/24 18:02:11 by kkido            ###   ########.fr       */
+/*   Updated: 2025/11/26 17:02:37 by kkido            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
 void	philo_parameter_init(int argc, char *argv[],
-		t_philo_parameter *philo_parameter)
+		t_philo_data *philo_parameter)
 {
 	size_t	i;
 
@@ -26,6 +26,7 @@ void	philo_parameter_init(int argc, char *argv[],
 		philo_parameter->num_of_philo_must_eat = atoi_for_philo(argv[5]);
 	else
 		philo_parameter->num_of_philo_must_eat = 0;
+	philo_parameter->philo_exit_id = 0;
 }
 
 int	atoi_for_philo(char *nptr)
@@ -47,30 +48,28 @@ int	atoi_for_philo(char *nptr)
 	return ((int)result_num);
 }
 
-t_threads_and_forks	alloc_threads_and_forks(int num_of_philo)
+void	alloc_philo_resources(t_philo_data *philo_data)
 {
-	int					i;
-	pthread_t			*threads;
-	pthread_mutex_t		*forks;
-	t_threads_and_forks	return_struct;
+	int	i;
 
 	i = 0;
-	threads = malloc(sizeof(pthread_t) * num_of_philo);
-	return_struct.threads = threads;
-	forks = malloc(sizeof(pthread_mutex_t) * num_of_philo);
-	return_struct.forks = forks;
-	if (!threads || !forks)
-		free_all_and_exit(3, &return_struct, num_of_philo);
-	while (i < num_of_philo)
+	philo_data->threads = malloc(sizeof(pthread_t) * philo_data->num_of_philo);
+	philo_data->forks = malloc(sizeof(pthread_mutex_t)
+			* philo_data->num_of_philo);
+	philo_data->someone_dead = malloc(sizeof(pthread_mutex_t));
+	if (!philo_data->threads || !philo_data->forks || !philo_data->someone_dead)
+		free_philo_data_and_exit(3, philo_data);
+	while (i < philo_data->num_of_philo)
 	{
-		if (pthread_mutex_init(&forks[i], NULL) != 0)
+		if (pthread_mutex_init(&philo_data->forks[i], NULL) != 0)
 		{
-			destroy_mutex_halfway(forks, i);
-			free_all_and_exit(4, &return_struct, num_of_philo);
+			destroy_mutex_halfway(philo_data->forks, i);
+			free_philo_data_and_exit(4, philo_data);
 		}
 		i++;
 	}
-	return (return_struct);
+	if (pthread_mutex_init(philo_data->someone_dead, NULL) != 0)
+		free_philo_data_and_exit(5, philo_data);
 }
 
 void	destroy_mutex_halfway(pthread_mutex_t *forks, int init_to_this_point)
@@ -80,4 +79,13 @@ void	destroy_mutex_halfway(pthread_mutex_t *forks, int init_to_this_point)
 	i = 0;
 	while (i < init_to_this_point)
 		pthread_mutex_destroy(&forks[i++]);
+}
+
+long long	get_time_in_ms(void)
+{
+	struct timeval	tv;
+
+	if (gettimeofday(&tv, NULL) != 0)
+		return (0);
+	return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
 }
