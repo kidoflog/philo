@@ -6,7 +6,7 @@
 /*   By: kkido <kkido@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/24 17:41:39 by kkido             #+#    #+#             */
-/*   Updated: 2025/11/26 18:02:11 by kkido            ###   ########.fr       */
+/*   Updated: 2025/11/27 18:34:50 by kkido            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,32 +41,44 @@ void	do_philosopher(t_philo_data *philo_data)
 
 void	*entry_routine(void *philo_all_info_void)
 {
-	t_philo			*philo_info;
-	pthread_mutex_t	*left_fork;
-	pthread_mutex_t	*right_fork;
+	t_philo	*philo_info;
 
 	philo_info = (t_philo *)philo_all_info_void;
-	right_fork = &philo_info->philo_data->forks[philo_info->philo_id - 1];
+	philo_info->right_fork = &philo_info->philo_data->forks[philo_info->philo_id
+		- 1];
 	if (philo_info->philo_data->num_of_philo == 1)
 	{
 		alone_philosopher_routine(philo_info);
 		return (NULL);
 	}
-	if (philo_info->philo_id % 2 == 0)
-		even_philosopher_routine(philo_info);
-	else
-		odd_philosopher_routine(philo_info);
+	// if (philo_info->philo_id % 2 == 0)
+	// 	even_philosopher_routine(philo_info);
+	// else
+	// 	odd_philosopher_routine(philo_info);
 	return (NULL);
 }
 
 void	alone_philosopher_routine(t_philo *philo_all_info)
 {
+	printf("%lld %d has taken a fork\n", get_time_in_ms()
+		- philo_all_info->philo_data->started_ms, philo_all_info->philo_id);
+	pthread_mutex_lock(philo_all_info->right_fork);
+	while (1)
+	{
+		usleep(200);
+		if (get_time_in_ms()
+			- philo_all_info->philo_data->started_ms >= philo_all_info->philo_data->time_to_die)
+			break ;
+	}
+	printf("%lld %d died\n", get_time_in_ms()
+		- philo_all_info->philo_data->started_ms, philo_all_info->philo_id);
+	pthread_mutex_unlock(philo_all_info->right_fork);
 }
 
-void	even_philosopher_routine(t_philo *philo_all_info)
-{
-}
+// void	even_philosopher_routine(t_philo *philo_all_info)
+// {
+// }
 
-void	odd_philosopher_routine(t_philo *philo_all_info)
-{
-}
+// void	odd_philosopher_routine(t_philo *philo_all_info)
+// {
+// }

@@ -6,7 +6,7 @@
 /*   By: kkido <kkido@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/19 13:11:50 by kkido             #+#    #+#             */
-/*   Updated: 2025/11/26 17:01:34 by kkido            ###   ########.fr       */
+/*   Updated: 2025/11/27 18:48:03 by kkido            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ typedef struct s_philo_data
 	int				time_to_sleep;
 	int				num_of_philo_must_eat;
 	pthread_t		*threads;
+	pthread_t       *is_printf_print;
 	pthread_mutex_t	*forks;
 	pthread_mutex_t	*someone_dead;
 	long long		started_ms;
@@ -39,6 +40,8 @@ typedef struct s_philo
 	t_philo_data	*philo_data;
 	int				philo_id;
 	long long		ate_ms;
+	pthread_mutex_t	*right_fork;
+	pthread_mutex_t	*left_fork;
 }					t_philo;
 
 // error_check.c
@@ -62,5 +65,7 @@ long long			get_time_in_ms(void);
 
 // do_philosopher.c
 void				do_philosopher(t_philo_data *philo_data);
+void				*entry_routine(void *philo_all_info_void);
+void				alone_philosopher_routine(t_philo *philo_all_info);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: kkido <kkido@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/19 18:09:37 by kkido             #+#    #+#             */
-/*   Updated: 2025/11/26 17:02:37 by kkido            ###   ########.fr       */
+/*   Updated: 2025/11/27 18:12:10 by kkido            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,7 @@
 void	philo_parameter_init(int argc, char *argv[],
 		t_philo_data *philo_parameter)
 {
-	size_t	i;
 
-	i = 1;
 	philo_parameter->num_of_philo = atoi_for_philo(argv[1]);
 	philo_parameter->time_to_die = atoi_for_philo(argv[2]);
 	philo_parameter->time_to_eat = atoi_for_philo(argv[3]);
