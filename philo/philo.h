@@ -6,7 +6,7 @@
 /*   By: kkido <kkido@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/19 13:11:50 by kkido             #+#    #+#             */
-/*   Updated: 2025/11/27 18:48:03 by kkido            ###   ########.fr       */
+/*   Updated: 2025/11/28 17:15:33 by kkido            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,9 @@ typedef struct s_philo_data
 	int				time_to_sleep;
 	int				num_of_philo_must_eat;
 	pthread_t		*threads;
-	pthread_t       *is_printf_print;
 	pthread_mutex_t	*forks;
+	pthread_mutex_t	*write_lock;
+	int				is_dead;
 	pthread_mutex_t	*someone_dead;
 	long long		started_ms;
 	int				philo_exit_id;
@@ -40,6 +41,7 @@ typedef struct s_philo
 	t_philo_data	*philo_data;
 	int				philo_id;
 	long long		ate_ms;
+	long long		start_sleep;
 	pthread_mutex_t	*right_fork;
 	pthread_mutex_t	*left_fork;
 }					t_philo;
@@ -63,9 +65,25 @@ void				destroy_mutex_halfway(pthread_mutex_t *forks,
 						int init_to_this_point);
 long long			get_time_in_ms(void);
 
+// philo_utils2.c
+long long			get_passed_time(long long started_time);
+int					is_dead_check(t_philo_data *philo_data);
+void				philo_dead(t_philo_data *philo_data);
+
 // do_philosopher.c
 void				do_philosopher(t_philo_data *philo_data);
 void				*entry_routine(void *philo_all_info_void);
-void				alone_philosopher_routine(t_philo *philo_all_info);
+void				alone_philosopher_routine(t_philo *philo_info,
+						t_philo_data *philo_data);
+void				even_philosopher_routine(t_philo *philo_info,
+						t_philo_data *philo_data);
+void				odd_philosopher_routine(t_philo *philo_info,
+						t_philo_data *philo_data);
 
+// print_fanc.c
+void				print_take_fork(t_philo *philo_info);
+void				print_sleep(t_philo *philo_info);
+void				print_eat(t_philo *philo_info);
+void				print_think(t_philo *philo_info);
+void				print_dead(t_philo *philo_info);
 #endif

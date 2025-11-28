@@ -6,7 +6,7 @@
 /*   By: kkido <kkido@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/19 18:09:37 by kkido             #+#    #+#             */
-/*   Updated: 2025/11/27 18:12:10 by kkido            ###   ########.fr       */
+/*   Updated: 2025/11/28 16:39:48 by kkido            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 void	philo_parameter_init(int argc, char *argv[],
 		t_philo_data *philo_parameter)
 {
-
 	philo_parameter->num_of_philo = atoi_for_philo(argv[1]);
 	philo_parameter->time_to_die = atoi_for_philo(argv[2]);
 	philo_parameter->time_to_eat = atoi_for_philo(argv[3]);
@@ -25,6 +24,7 @@ void	philo_parameter_init(int argc, char *argv[],
 	else
 		philo_parameter->num_of_philo_must_eat = 0;
 	philo_parameter->philo_exit_id = 0;
+	philo_parameter->is_dead = 0;
 }
 
 int	atoi_for_philo(char *nptr)
@@ -55,6 +55,7 @@ void	alloc_philo_resources(t_philo_data *philo_data)
 	philo_data->forks = malloc(sizeof(pthread_mutex_t)
 			* philo_data->num_of_philo);
 	philo_data->someone_dead = malloc(sizeof(pthread_mutex_t));
+	philo_data->write_lock = malloc(sizeof(pthread_mutex_t));
 	if (!philo_data->threads || !philo_data->forks || !philo_data->someone_dead)
 		free_philo_data_and_exit(3, philo_data);
 	while (i < philo_data->num_of_philo)
@@ -68,6 +69,8 @@ void	alloc_philo_resources(t_philo_data *philo_data)
 	}
 	if (pthread_mutex_init(philo_data->someone_dead, NULL) != 0)
 		free_philo_data_and_exit(5, philo_data);
+	if (pthread_mutex_init(philo_data->write_lock, NULL) != 0)
+		free_philo_data_and_exit(8, philo_data);
 }
 
 void	destroy_mutex_halfway(pthread_mutex_t *forks, int init_to_this_point)
@@ -84,6 +87,6 @@ long long	get_time_in_ms(void)
 	struct timeval	tv;
 
 	if (gettimeofday(&tv, NULL) != 0)
-		return (0);
+		return (-1);
 	return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
 }

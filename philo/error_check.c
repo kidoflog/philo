@@ -6,7 +6,7 @@
 /*   By: kkido <kkido@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/19 16:24:44 by kkido             #+#    #+#             */
-/*   Updated: 2025/11/26 15:16:50 by kkido            ###   ########.fr       */
+/*   Updated: 2025/11/28 18:26:55 by kkido            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void	is_natural_number(char *num)
 	i = 0;
 	while (num[i] != '\0')
 	{
-		if (num[i] < '0' && num[i] > '9')
+		if (num[i] < '0' || num[i] > '9')
 			free_philo_data_and_exit(2, NULL);
 		i++;
 	}
