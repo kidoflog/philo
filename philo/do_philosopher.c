@@ -6,7 +6,7 @@
 /*   By: kkido <kkido@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/24 17:41:39 by kkido             #+#    #+#             */
-/*   Updated: 2025/11/28 19:35:44 by kkido            ###   ########.fr       */
+/*   Updated: 2025/11/28 20:02:09 by kkido            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	do_philosopher(t_philo_data *philo_data)
 	int		i;
 
 	i = 0;
-	philo_data->started_ms = get_time_in_ms() + 3000;
+	philo_data->started_ms = get_time_in_ms() + 1000;
 	if (philo_data->started_ms < 0)
 		free_philo_data_and_exit(6, philo_data);
 	philo_all_info = malloc(sizeof(t_philo) * philo_data->num_of_philo);

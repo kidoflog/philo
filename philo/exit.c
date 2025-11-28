@@ -6,7 +6,7 @@
 /*   By: kkido <kkido@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/19 13:13:31 by kkido             #+#    #+#             */
-/*   Updated: 2025/11/28 16:38:26 by kkido            ###   ########.fr       */
+/*   Updated: 2025/11/28 19:59:32 by kkido            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,4 +59,6 @@ void	free_all_mem(size_t id, t_philo_data *philo_all_resources)
 		free(philo_all_resources->threads);
 	if (philo_all_resources->someone_dead)
 		free(philo_all_resources->someone_dead);
+	if (philo_all_resources->write_lock)
+		free(philo_all_resources->write_lock);
 }
