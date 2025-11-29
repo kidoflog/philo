@@ -6,7 +6,7 @@
 /*   By: kkido <kkido@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/24 17:41:39 by kkido             #+#    #+#             */
-/*   Updated: 2025/11/28 20:02:09 by kkido            ###   ########.fr       */
+/*   Updated: 2025/11/29 14:29:33 by kkido            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	do_philosopher(t_philo_data *philo_data)
 	int		i;
 
 	i = 0;
-	philo_data->started_ms = get_time_in_ms() + 1000;
+	philo_data->started_ms = get_time_in_ms() + 500;
 	if (philo_data->started_ms < 0)
 		free_philo_data_and_exit(6, philo_data);
 	philo_all_info = malloc(sizeof(t_philo) * philo_data->num_of_philo);
@@ -28,15 +28,12 @@ void	do_philosopher(t_philo_data *philo_data)
 	{
 		philo_all_info[i].philo_id = i + 1;
 		philo_all_info[i].ate_ms = philo_data->started_ms;
-		philo_all_info[i].start_sleep = philo_data->started_ms;
 		philo_all_info[i].philo_data = philo_data;
 		pthread_create(&philo_data->threads[i], NULL, &entry_routine,
 			&philo_all_info[i]);
 		i++;
 	}
-	i = 0;
-	while (i < philo_data->num_of_philo)
-		pthread_join(philo_data->threads[i++], NULL);
+	do_observer(philo_data, philo_all_info);
 	free(philo_all_info);
 }
 
@@ -66,20 +63,11 @@ void	*entry_routine(void *philo_all_info_void)
 
 void	alone_philosopher_routine(t_philo *philo_info, t_philo_data *philo_data)
 {
-	while (1)
-	{
-		if (philo_data->started_ms <= get_time_in_ms())
-			break ;
-		usleep(100);
-	}
+	wait_until_start(philo_data);
 	pthread_mutex_lock(philo_info->right_fork);
 	print_take_fork(philo_info);
-	while (1)
-	{
+	while (get_passed_time(philo_data->started_ms) >= philo_data->time_to_die)
 		usleep(100);
-		if (get_passed_time(philo_data->started_ms) >= philo_data->time_to_die)
-			break ;
-	}
 	print_dead(philo_info);
 	pthread_mutex_unlock(philo_info->right_fork);
 	pthread_mutex_lock(philo_info->philo_data->someone_dead);
@@ -90,13 +78,8 @@ void	even_philosopher_routine(t_philo *philo_info, t_philo_data *philo_data)
 	int	i;
 
 	i = 0;
-	while (1)
-	{
-		if (philo_data->started_ms <= get_time_in_ms())
-			break ;
-		usleep(100);
-	}
-	while (i < 1)
+	wait_until_start(philo_data);
+	while (is_dead_check(philo_data) == 0)
 	{
 		pthread_mutex_lock(philo_info->right_fork);
 		print_take_fork(philo_info);
@@ -104,15 +87,13 @@ void	even_philosopher_routine(t_philo *philo_info, t_philo_data *philo_data)
 		print_take_fork(philo_info);
 		philo_info->ate_ms = get_time_in_ms();
 		print_eat(philo_info);
-		while (get_time_in_ms() - philo_info->ate_ms <= philo_data->time_to_eat)
-			usleep(50);
+		eat_timer(philo_data);
 		pthread_mutex_unlock(philo_info->right_fork);
 		pthread_mutex_unlock(philo_info->left_fork);
-		philo_info->start_sleep = get_time_in_ms();
+		if (i < philo_data->num_of_philo_must_eat)
+			break ;
 		print_sleep(philo_info);
-		while (get_time_in_ms()
-			- philo_info->start_sleep <= philo_data->time_to_sleep)
-			usleep(50);
+		sleep_timer(philo_data);
 		print_think(philo_info);
 		i++;
 	}
@@ -123,14 +104,9 @@ void	odd_philosopher_routine(t_philo *philo_info, t_philo_data *philo_data)
 	int	i;
 
 	i = 0;
-	while (1)
-	{
-		if (philo_data->started_ms <= get_time_in_ms())
-			break ;
-		usleep(100);
-	}
-	usleep(2000);
-	while (i < 1)
+	wait_until_start(philo_data);
+	usleep(1000);
+	while (is_dead_check(philo_data) == 0)
 	{
 		print_think(philo_info);
 		pthread_mutex_lock(philo_info->left_fork);
@@ -139,15 +115,13 @@ void	odd_philosopher_routine(t_philo *philo_info, t_philo_data *philo_data)
 		print_take_fork(philo_info);
 		philo_info->ate_ms = get_time_in_ms();
 		print_eat(philo_info);
-		while (get_time_in_ms() - philo_info->ate_ms <= philo_data->time_to_eat)
-			usleep(100);
+		eat_timer(philo_data);
 		pthread_mutex_unlock(philo_info->right_fork);
 		pthread_mutex_unlock(philo_info->left_fork);
-		philo_info->start_sleep = get_time_in_ms();
+		if (i < philo_data->num_of_philo_must_eat)
+			break ;
 		print_sleep(philo_info);
-		while (get_time_in_ms()
-			- philo_info->start_sleep <= philo_data->time_to_sleep)
-			usleep(100);
+		sleep_timer(philo_data);
 		i++;
 	}
 }

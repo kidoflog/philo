@@ -6,7 +6,7 @@
 /*   By: kkido <kkido@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/28 12:12:30 by kkido             #+#    #+#             */
-/*   Updated: 2025/11/28 19:06:02 by kkido            ###   ########.fr       */
+/*   Updated: 2025/11/29 14:41:44 by kkido            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,4 +32,14 @@ void	philo_dead(t_philo_data *philo_data)
 	pthread_mutex_lock(philo_data->someone_dead);
 	philo_data->is_dead = 1;
 	pthread_mutex_unlock(philo_data->someone_dead);
+}
+
+void	wait_until_start(t_philo_data *philo_data)
+{
+	while (1)
+	{
+		if (philo_data->started_ms <= get_time_in_ms())
+			break ;
+		usleep(100);
+	}
 }
