@@ -6,7 +6,7 @@
 /*   By: kkido <kkido@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/29 13:25:11 by kkido             #+#    #+#             */
-/*   Updated: 2025/11/29 14:37:20 by kkido            ###   ########.fr       */
+/*   Updated: 2025/11/29 14:57:11 by kkido            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ void	do_observer(t_philo_data *philo_data, t_philo *philo_all_info)
 	pthread_create(&observer, NULL, (void *)&observer_routine, philo_all_info);
 	while (i < philo_data->num_of_philo)
 		pthread_join(philo_data->threads[i++], NULL);
+	philo_data->is_dead = 1;
 	pthread_join(observer, NULL);
 }
 

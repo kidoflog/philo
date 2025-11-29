@@ -6,7 +6,7 @@
 /*   By: kkido <kkido@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/24 17:41:39 by kkido             #+#    #+#             */
-/*   Updated: 2025/11/29 14:29:33 by kkido            ###   ########.fr       */
+/*   Updated: 2025/11/29 14:54:48 by kkido            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ void	even_philosopher_routine(t_philo *philo_info, t_philo_data *philo_data)
 		eat_timer(philo_data);
 		pthread_mutex_unlock(philo_info->right_fork);
 		pthread_mutex_unlock(philo_info->left_fork);
-		if (i < philo_data->num_of_philo_must_eat)
+		if (i > philo_data->num_of_philo_must_eat)
 			break ;
 		print_sleep(philo_info);
 		sleep_timer(philo_data);
@@ -118,7 +118,7 @@ void	odd_philosopher_routine(t_philo *philo_info, t_philo_data *philo_data)
 		eat_timer(philo_data);
 		pthread_mutex_unlock(philo_info->right_fork);
 		pthread_mutex_unlock(philo_info->left_fork);
-		if (i < philo_data->num_of_philo_must_eat)
+		if (i > philo_data->num_of_philo_must_eat)
 			break ;
 		print_sleep(philo_info);
 		sleep_timer(philo_data);
