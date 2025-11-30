@@ -6,7 +6,7 @@
 /*   By: kkido <kkido@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/24 17:41:39 by kkido             #+#    #+#             */
-/*   Updated: 2025/11/29 14:54:48 by kkido            ###   ########.fr       */
+/*   Updated: 2025/11/30 14:49:00 by kkido            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	do_philosopher(t_philo_data *philo_data)
 	int		i;
 
 	i = 0;
-	philo_data->started_ms = get_time_in_ms() + 500;
+	philo_data->started_ms = get_time_in_ms() + 1000;
 	if (philo_data->started_ms < 0)
 		free_philo_data_and_exit(6, philo_data);
 	philo_all_info = malloc(sizeof(t_philo) * philo_data->num_of_philo);
@@ -91,7 +91,10 @@ void	even_philosopher_routine(t_philo *philo_info, t_philo_data *philo_data)
 		pthread_mutex_unlock(philo_info->right_fork);
 		pthread_mutex_unlock(philo_info->left_fork);
 		if (i > philo_data->num_of_philo_must_eat)
+		{
+			printf("even break\n");
 			break ;
+		}
 		print_sleep(philo_info);
 		sleep_timer(philo_data);
 		print_think(philo_info);
@@ -105,7 +108,7 @@ void	odd_philosopher_routine(t_philo *philo_info, t_philo_data *philo_data)
 
 	i = 0;
 	wait_until_start(philo_data);
-	usleep(1000);
+	usleep(3000);
 	while (is_dead_check(philo_data) == 0)
 	{
 		print_think(philo_info);
