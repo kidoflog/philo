@@ -6,7 +6,7 @@
 /*   By: kkido <kkido@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/29 13:25:11 by kkido             #+#    #+#             */
-/*   Updated: 2025/11/29 14:57:11 by kkido            ###   ########.fr       */
+/*   Updated: 2025/11/30 20:06:22 by kkido            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,14 +40,14 @@ void	*observer_routine(void *philo_all_info_void)
 		i = 0;
 		while (i < philo_data->num_of_philo)
 		{
-			if (get_passed_time(philo_all_info->ate_ms) >= time_to_die)
+			if (get_passed_time(philo_all_info[i].ate_ms) >= time_to_die)
 			{
 				print_dead(&philo_all_info[i]);
 				return (NULL);
 			}
 			i++;
 		}
-		usleep(10);
+		usleep(1000);
 	}
 	return (NULL);
 }

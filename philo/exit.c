@@ -6,7 +6,7 @@
 /*   By: kkido <kkido@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/19 13:13:31 by kkido             #+#    #+#             */
-/*   Updated: 2025/11/29 14:25:27 by kkido            ###   ########.fr       */
+/*   Updated: 2025/11/30 20:23:54 by kkido            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,9 @@ void	free_all_mem(size_t id, t_philo_data *philo_all_resources)
 		return ;
 	if (id != 3 && id != 4)
 	{
-		while (i < philo_all_resources->num_of_philo)
-			pthread_mutex_destroy(&philo_all_resources->forks[i++]);
+		destroy_all_mutexes(philo_all_resources, philo_all_resources->forks);
+		destroy_all_mutexes(philo_all_resources,
+			philo_all_resources->eat_locks);
 		if (id != 5)
 		{
 			if (id != 8)
@@ -61,4 +62,16 @@ void	free_all_mem(size_t id, t_philo_data *philo_all_resources)
 		free(philo_all_resources->someone_dead);
 	if (philo_all_resources->write_lock)
 		free(philo_all_resources->write_lock);
+}
+
+void	destroy_all_mutexes(t_philo_data *philo_data, pthread_mutex_t *mutexes)
+{
+	int	i;
+
+	i = 0;
+	while (i < philo_data->num_of_philo)
+	{
+		pthread_mutex_destroy(&mutexes[i]);
+		i++;
+	}
 }

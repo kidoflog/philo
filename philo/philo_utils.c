@@ -6,7 +6,7 @@
 /*   By: kkido <kkido@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/19 18:09:37 by kkido             #+#    #+#             */
-/*   Updated: 2025/11/30 19:50:16 by kkido            ###   ########.fr       */
+/*   Updated: 2025/11/30 20:19:31 by kkido            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,17 +56,12 @@ void	alloc_philo_resources(t_philo_data *philo_data)
 			* philo_data->num_of_philo);
 	philo_data->someone_dead = malloc(sizeof(pthread_mutex_t));
 	philo_data->write_lock = malloc(sizeof(pthread_mutex_t));
+	philo_data->eat_locks = malloc(sizeof(pthread_mutex_t)
+			* philo_data->num_of_philo);
 	if (!philo_data->threads || !philo_data->forks || !philo_data->someone_dead)
 		free_philo_data_and_exit(3, philo_data);
-	while (i < philo_data->num_of_philo)
-	{
-		if (pthread_mutex_init(&philo_data->forks[i], NULL) != 0)
-		{
-			destroy_mutex_halfway(philo_data->forks, i);
-			free_philo_data_and_exit(4, philo_data);
-		}
-		i++;
-	}
+	mutexes_init(philo_data, philo_data->forks);
+	mutexes_init(philo_data, philo_data->eat_locks);
 	if (pthread_mutex_init(philo_data->someone_dead, NULL) != 0)
 		free_philo_data_and_exit(5, philo_data);
 	if (pthread_mutex_init(philo_data->write_lock, NULL) != 0)

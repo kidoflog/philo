@@ -6,7 +6,7 @@
 /*   By: kkido <kkido@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/19 13:11:50 by kkido             #+#    #+#             */
-/*   Updated: 2025/11/30 19:50:28 by kkido            ###   ########.fr       */
+/*   Updated: 2025/11/30 20:24:09 by kkido            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ typedef struct s_philo_data
 	int				num_of_philo_must_eat;
 	pthread_t		*threads;
 	pthread_mutex_t	*forks;
+	pthread_mutex_t	*eat_locks;
 	pthread_mutex_t	*write_lock;
 	int				is_dead;
 	pthread_mutex_t	*someone_dead;
@@ -54,6 +55,8 @@ void				philo_parameter_error_check(t_philo_data param);
 void				free_philo_data_and_exit(size_t id,
 						t_philo_data *philo_all_resources);
 void				free_all_mem(size_t id, t_philo_data *philo_all_resources);
+void				destroy_all_mutexes(t_philo_data *philo_data,
+						pthread_mutex_t *mutexes);
 
 // philo_utils.c
 void				philo_parameter_init(int argc, char *argv[],
@@ -73,6 +76,8 @@ void				wait_until_start(t_philo_data *philo_data);
 // philo_utils3.c
 void				sleep_timer(t_philo_data *philo_data);
 void				eat_timer(t_philo_data *philo_data);
+void				mutexes_init(t_philo_data *philo_data,
+						pthread_mutex_t *mutexes);
 
 // do_philosopher.c
 void				do_philosopher(t_philo_data *philo_data);
