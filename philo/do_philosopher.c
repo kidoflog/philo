@@ -6,7 +6,7 @@
 /*   By: kkido <kkido@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/24 17:41:39 by kkido             #+#    #+#             */
-/*   Updated: 2025/11/30 14:49:00 by kkido            ###   ########.fr       */
+/*   Updated: 2025/11/30 19:56:46 by kkido            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	do_philosopher(t_philo_data *philo_data)
 	int		i;
 
 	i = 0;
-	philo_data->started_ms = get_time_in_ms() + 1000;
+	philo_data->started_ms = get_time_in_ms() + 3000;
 	if (philo_data->started_ms < 0)
 		free_philo_data_and_exit(6, philo_data);
 	philo_all_info = malloc(sizeof(t_philo) * philo_data->num_of_philo);
@@ -85,20 +85,17 @@ void	even_philosopher_routine(t_philo *philo_info, t_philo_data *philo_data)
 		print_take_fork(philo_info);
 		pthread_mutex_lock(philo_info->left_fork);
 		print_take_fork(philo_info);
-		philo_info->ate_ms = get_time_in_ms();
 		print_eat(philo_info);
+		philo_info->ate_ms = get_time_in_ms();
 		eat_timer(philo_data);
 		pthread_mutex_unlock(philo_info->right_fork);
 		pthread_mutex_unlock(philo_info->left_fork);
-		if (i > philo_data->num_of_philo_must_eat)
-		{
-			printf("even break\n");
+		i++;
+		if (i >= philo_data->num_of_philo_must_eat)
 			break ;
-		}
 		print_sleep(philo_info);
 		sleep_timer(philo_data);
 		print_think(philo_info);
-		i++;
 	}
 }
 
@@ -111,20 +108,20 @@ void	odd_philosopher_routine(t_philo *philo_info, t_philo_data *philo_data)
 	usleep(3000);
 	while (is_dead_check(philo_data) == 0)
 	{
-		print_think(philo_info);
-		pthread_mutex_lock(philo_info->left_fork);
-		print_take_fork(philo_info);
 		pthread_mutex_lock(philo_info->right_fork);
 		print_take_fork(philo_info);
-		philo_info->ate_ms = get_time_in_ms();
+		pthread_mutex_lock(philo_info->left_fork);
+		print_take_fork(philo_info);
 		print_eat(philo_info);
+		philo_info->ate_ms = get_time_in_ms();
 		eat_timer(philo_data);
 		pthread_mutex_unlock(philo_info->right_fork);
 		pthread_mutex_unlock(philo_info->left_fork);
-		if (i > philo_data->num_of_philo_must_eat)
+		i++;
+		if (i >= philo_data->num_of_philo_must_eat)
 			break ;
 		print_sleep(philo_info);
 		sleep_timer(philo_data);
-		i++;
+		print_think(philo_info);
 	}
 }
