@@ -6,7 +6,7 @@
 /*   By: kkido <kkido@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/19 18:09:37 by kkido             #+#    #+#             */
-/*   Updated: 2025/11/30 20:19:31 by kkido            ###   ########.fr       */
+/*   Updated: 2025/12/01 19:08:55 by kkido            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,6 @@ void	philo_parameter_init(int argc, char *argv[],
 		philo_parameter->num_of_philo_must_eat = atoi_for_philo(argv[5]);
 	else
 		philo_parameter->num_of_philo_must_eat = 0;
-	philo_parameter->philo_exit_id = 0;
 	philo_parameter->is_dead = 0;
 }
 
@@ -46,11 +45,8 @@ int	atoi_for_philo(char *nptr)
 	return ((int)result_num);
 }
 
-void	alloc_philo_resources(t_philo_data *philo_data)
+int	alloc_philo_resources(t_philo_data *philo_data)
 {
-	int	i;
-
-	i = 0;
 	philo_data->threads = malloc(sizeof(pthread_t) * philo_data->num_of_philo);
 	philo_data->forks = malloc(sizeof(pthread_mutex_t)
 			* philo_data->num_of_philo);
@@ -58,14 +54,18 @@ void	alloc_philo_resources(t_philo_data *philo_data)
 	philo_data->write_lock = malloc(sizeof(pthread_mutex_t));
 	philo_data->eat_locks = malloc(sizeof(pthread_mutex_t)
 			* philo_data->num_of_philo);
-	if (!philo_data->threads || !philo_data->forks || !philo_data->someone_dead)
-		free_philo_data_and_exit(3, philo_data);
-	mutexes_init(philo_data, philo_data->forks);
-	mutexes_init(philo_data, philo_data->eat_locks);
+	if (!philo_data->threads || !philo_data->forks || !philo_data->someone_dead
+		|| !philo_data->write_lock || !philo_data->eat_locks)
+		return (3);
+	if (mutexes_init(philo_data, philo_data->forks) != 0)
+		return (4);
+	if (mutexes_init(philo_data, philo_data->eat_locks) != 0)
+		return (5);
 	if (pthread_mutex_init(philo_data->someone_dead, NULL) != 0)
-		free_philo_data_and_exit(5, philo_data);
+		return (6);
 	if (pthread_mutex_init(philo_data->write_lock, NULL) != 0)
-		free_philo_data_and_exit(8, philo_data);
+		return (7);
+	return (0);
 }
 
 void	destroy_mutex_halfway(pthread_mutex_t *forks, int init_to_this_point)

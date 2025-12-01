@@ -6,7 +6,7 @@
 /*   By: kkido <kkido@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/28 15:27:41 by kkido             #+#    #+#             */
-/*   Updated: 2025/11/28 19:46:54 by kkido            ###   ########.fr       */
+/*   Updated: 2025/12/01 17:25:45 by kkido            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	print_take_fork(t_philo *philo_info)
 	pthread_mutex_unlock(philo_info->philo_data->write_lock);
 }
 
-void	print_eat(t_philo *philo_info)
+void	do_eat(t_philo *philo_info)
 {
 	pthread_mutex_lock(philo_info->philo_data->write_lock);
 	if (is_dead_check(philo_info->philo_data) == 0)
@@ -30,9 +30,10 @@ void	print_eat(t_philo *philo_info)
 			get_passed_time(philo_info->philo_data->started_ms),
 			philo_info->philo_id);
 	pthread_mutex_unlock(philo_info->philo_data->write_lock);
+	eat_timer(philo_info->philo_data);
 }
 
-void	print_sleep(t_philo *philo_info)
+void	do_sleep(t_philo *philo_info)
 {
 	pthread_mutex_lock(philo_info->philo_data->write_lock);
 	if (is_dead_check(philo_info->philo_data) == 0)
@@ -40,6 +41,7 @@ void	print_sleep(t_philo *philo_info)
 			get_passed_time(philo_info->philo_data->started_ms),
 			philo_info->philo_id);
 	pthread_mutex_unlock(philo_info->philo_data->write_lock);
+	sleep_timer(philo_info->philo_data);
 }
 
 void	print_think(t_philo *philo_info)

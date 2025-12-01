@@ -6,7 +6,7 @@
 #    By: kkido <kkido@student.42tokyo.jp>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/10/22 11:36:37 by kkido             #+#    #+#              #
-#    Updated: 2025/11/29 14:25:35 by kkido            ###   ########.fr        #
+#    Updated: 2025/12/01 17:31:47 by kkido            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,7 +23,7 @@ SRCS := \
 	philo_utils2.c \
 	philo_utils3.c \
 	do_philosopher.c \
-	print_fanc.c \
+	philo_fanc.c \
 	do_observer.c \
 
 
